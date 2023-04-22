@@ -162,4 +162,87 @@ class DoctorsController extends Controller
         );
     }
 
+    public function latest()
+    {
+        $doctors = Doctor::orderBy('created_at', 'desc')->take(6)->get();
+        return response()->json(
+            [
+                'doctors' => $doctors,
+            ],
+            200
+        );
+    }
+
+
+    public function search($speciality, $city){
+
+
+        
+
+        if($speciality == 0 && $city == 0){
+            $doctors = Doctor::all();
+            return response()->json(
+                [
+                    'doctors' => $doctors,
+                ],
+                200
+            );
+        }
+
+        if($speciality == 0){
+            $doctors = Doctor::where('city', 'like', '%' . $city . '%')
+            ->get();
+            return response()->json(
+                [
+                    'doctors' => $doctors,
+                ],
+                200
+            );
+        }
+
+        if($city == 0){
+            $doctors = Doctor::where('speciality', 'like', '%' . $speciality . '%')
+            ->get();
+            return response()->json(
+                [
+                    'doctors' => $doctors,
+                ],
+                200
+            );
+        }
+
+
+        $doctors = Doctor::where('speciality', 'like', '%' . $speciality . '%')
+        ->where('city', 'like', '%' . $city . '%')
+        ->get();
+        return response()->json(
+            [
+                'doctors' => $doctors,
+            ],
+            200
+        );
+    }
+
+    public function show($id)
+    {
+        $doctor = Doctor::find($id);
+        return response()->json(
+            [
+                'doctor' => $doctor,
+            ],
+            200
+        );
+    }
+
+    public function countDoctors()
+    {
+        $doctors = Doctor::all();
+        $count = $doctors->count();
+        return response()->json(
+            [
+                'count' => $count,
+            ],
+            200
+        );
+    }
 }

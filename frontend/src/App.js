@@ -1,9 +1,5 @@
 import React from 'react'
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './Home/Home'
 import DoctorLogin from './doctor/DoctorLogin'
 import PatientLogin from './patient/PatientLogin'
@@ -14,21 +10,31 @@ import AdminLogin from './admin/AdminLogin'
 import { AdminProvider } from './context/AdminContext'
 import AdminDashboard from './admin/AdminDashboard'
 import AdminDoctors from './admin/AdminDoctors'
+import { PatientProvider } from './context/PatientContext'
+import PatientRegister from './patient/PatientRegister'
+import { PublicProvider } from './context/PublicContext'
+import Doctors from './doctor/Doctors'
+import DoctorAppointements from './doctor/DoctorAppointements'
+import AdminAppoinetements from './admin/AdminAppoinetements'
 
 function App() {
-  
-
   return (
     <div className='min-h-screen bg-gradient-to-b from-primary to-third '>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route
+            path='/'
+            element={
+              <PublicProvider>
+                <Home />
+              </PublicProvider>
+            }
+          />
           <Route
             path='/doctor/login'
             element={
               <DoctorProvider>
-                {' '}
-                <DoctorLogin />{' '}
+                <DoctorLogin />
               </DoctorProvider>
             }
           />
@@ -36,18 +42,38 @@ function App() {
             path='/doctor/register'
             element={
               <DoctorProvider>
-                {' '}
-                <DoctorRegister />{' '}
+                <DoctorRegister />
               </DoctorProvider>
             }
           />
-          <Route path='/patient/login' element={<PatientLogin />} />
+          <Route path='/doctors' element={
+            <PublicProvider>
+              <Doctors />
+            </PublicProvider>
+          } />
+
+          <Route path='/doctor/:doctor_id/appointments' element={ <DoctorAppointements />} />
+          <Route
+            path='/patient/login'
+            element={
+              <PatientProvider>
+                <PatientLogin />
+              </PatientProvider>
+            }
+          />
+          <Route
+            path='/patient/register'
+            element={
+              <PatientProvider>
+                <PatientRegister />
+              </PatientProvider>
+            }
+          />
           <Route
             path='/admin/login'
             element={
               <AdminProvider>
-                {' '}
-                <AdminLogin />{' '}
+                <AdminLogin />
               </AdminProvider>
             }
           />
@@ -55,8 +81,7 @@ function App() {
             path='/admin/dashboard'
             element={
               <AdminProvider>
-                {' '}
-                <AdminDashboard />{' '}
+                <AdminDashboard />
               </AdminProvider>
             }
           />
@@ -64,11 +89,13 @@ function App() {
             path='/admin/doctors'
             element={
               <AdminProvider>
-                {' '}
-                <AdminDoctors />{' '}
+                <AdminDoctors />
               </AdminProvider>
             }
           />
+
+          <Route path="/admin/appointements" element={<AdminProvider><AdminAppoinetements /></AdminProvider>} />
+
           <Route path='/*' element={<NotFound />} />
         </Routes>
       </BrowserRouter>

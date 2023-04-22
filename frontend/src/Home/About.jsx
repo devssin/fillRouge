@@ -3,12 +3,12 @@ import about from '../assets/img/about.png'
 
 const About = () => {
   return (
-    <div className='pb-10'>
-      <h2 className='text-center text-2xl font-semibold text-font my-10'>
-        C'esy quoi GetWell ?
+    <div className='pb-10 mt-20'>
+      <h2 className='text-center text-2xl font-bold text-font my-10'>
+        C'est quoi GetWell ?
       </h2>
       <div className='flex flex-col md:flex-row  items-center  gap-5'>
-        <div className='w-1/2'>
+        <div className='sm:w-1/2 px-10'>
           <p >
             Bienvenue sur notre site de réservation de consultations médicales
             en ligne. Notre équipe est composée de professionnels passionnés de
@@ -25,7 +25,7 @@ const About = () => {
             besoins en matière de soins de santé en ligne.
           </p>
         </div>
-        <div className='w-1/2'>
+        <div className='sm:w-1/2 px-10'>
           <img src={about} alt='about' />
         </div>
       </div>

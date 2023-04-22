@@ -12,6 +12,9 @@ export const AdminProvider = ({ children }) => {
     password: '',
   })
   const [doctors, setDoctors] = useState([])
+  const [patients, setPatients] = useState([])
+  const [appointments, setAppointments] = useState([])
+
   const getDoctors = async () => {
     try {
       const response = await axios({
@@ -102,8 +105,33 @@ export const AdminProvider = ({ children }) => {
     } catch (error) {
       Swal.fire('Email ou mot de passe incorrect', '', 'error')
     }
+
+    
+    
+  }
+  
+  const handleLogout = () => {
+    localStorage.removeItem('admin-token')
+    localStorage.removeItem('admin')
+    navigate('/admin/login')
   }
 
+  const getAppointements = async () => {
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: 'http://localhost:8000/api/appointements',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('admin-token')}`,
+        },
+      })
+      setAppointments(response.data.appointements)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <AdminContext.Provider
       value={{
@@ -114,6 +142,9 @@ export const AdminProvider = ({ children }) => {
         checkIfAdminIsLoggedIn,
         getDoctors,
         desactivateAccount,
+        getAppointements,
+        appointments,
+        handleLogout,
       }}
     >
       {children}

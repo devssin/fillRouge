@@ -2,11 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DaysController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\HoursController;
 use App\Http\Controllers\DoctorsController;
 use App\Http\Controllers\PatientsController;
 use App\Http\Controllers\AppointementsController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -25,9 +26,17 @@ Route::middleware(['auth:patient'])->group(function () {
 });
 
 
-Route::middleware(['auth:doctor'])->group(function () {
-    
+Route::middleware(['auth:doctor'])
+    ->prefix('doctors')
+    ->group(function () {
+        Route::get('/{id}/appointements', [AppointementsController::class, 'doctorAppointements']);
 
+    });
+
+
+
+
+Route::middleware(['auth:doctor'])->group(function () {
 });
 
 
@@ -35,13 +44,17 @@ Route::prefix('doctors')->group(function () {
     Route::post('/register', [DoctorsController::class, 'register']);
     Route::post('/login', [DoctorsController::class, 'login']);
     Route::get('/', [DoctorsController::class, 'index']);
+    Route::get('/{speciality}/{city}', [DoctorsController::class, 'search']);
+    Route::get('/{id}', [DoctorsController::class, 'show']);
+    Route::get('/latest', [DoctorsController::class, 'latest']);
 
 });
 
-Route::prefix('admin')->group(function (){
+
+
+Route::prefix('admin')->group(function () {
     Route::post('/register', [AdminController::class, 'register']);
     Route::post('/login', [AdminController::class, 'login']);
-    
 });
 
 
@@ -49,24 +62,19 @@ Route::prefix('admin')->group(function (){
 Route::prefix('patients')->group(function () {
     Route::post('/register', [PatientsController::class, 'register']);
     Route::post('/login', [PatientsController::class, 'login']);
-   
 });
 
 
 
-Route::middleware(['auth:doctor']) 
-    ->prefix('doctors') 
-    ->group(function () {
-        
-    });
 
 Route::middleware(['auth:admin'])->group(function () {
     Route::put('/doctors/{id}/activate', [DoctorsController::class, 'activate']);
     Route::put('/doctors/{id}/desactivate', [DoctorsController::class, 'desactivate']);
+    Route::get('/appointements', [AppointementsController::class, 'index']);
 });
 
 
+Route::get('/days', [DaysController::class, 'index']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/doctors/{id}/hours/{day_id}', [HoursController::class, 'index']);
+

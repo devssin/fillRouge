@@ -3,26 +3,24 @@ import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
   BellIcon,
   CalendarIcon,
-
   HomeIcon,
-  UserCircleIcon,
   MenuAlt2Icon,
+  UserCircleIcon,
   UsersIcon,
   XIcon,
 } from '@heroicons/react/outline'
 import { SearchIcon } from '@heroicons/react/solid'
 import { NavLink } from 'react-router-dom'
 
- const navigation = [
-  { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon, current: true },
+const navigation = [
+  { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
   { name: 'Doctors', href: '/admin/doctors', icon: UserCircleIcon, current: false },
   { name: 'Patients', href: '/admin/patients', icon: UsersIcon, current: false },
   { name: 'Appointments', href: '/admin/appointements', icon: CalendarIcon, current: false },
 ]
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
+  { name: 'Your Profile', href: '/admin/dashboard' },
   { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
 ]
 
 function classNames(...classes) {
@@ -87,6 +85,7 @@ export default function Example() {
                 </Transition.Child>
                 <div className='flex-shrink-0 flex items-center px-4'>
                   <h1 className='text-white text-lg font-bold'>GetWell</h1>
+                  <p>Doctor Dashboard</p>
                 </div>
                 <div className='mt-5 flex-1 h-0 overflow-y-auto'>
                   <nav className='px-2 space-y-1'>
@@ -124,9 +123,10 @@ export default function Example() {
         <div className='hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0'>
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className='flex-1 flex flex-col min-h-0 bg-gray-800'>
-            <div className='flex items-center h-16 flex-shrink-0 px-4 bg-gray-900'>
+            <div className='flex flex-col  flex-shrink-0 px-4 py-5 bg-gray-900'>
               
               <h1 className='text-lg text-white font-bold'>GetWell</h1>
+              <p className='text-white'>Doctor Dashboard</p>
             </div>
             <div className='flex-1 flex flex-col overflow-y-auto'>
               <nav className='flex-1 px-2 py-4 space-y-1'>
