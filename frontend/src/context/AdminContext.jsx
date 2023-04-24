@@ -14,6 +14,9 @@ export const AdminProvider = ({ children }) => {
   const [doctors, setDoctors] = useState([])
   const [patients, setPatients] = useState([])
   const [appointments, setAppointments] = useState([])
+  const [patientsLoaded, setPatientsLoaded] = useState(false)
+
+
 
   const getDoctors = async () => {
     try {
@@ -28,6 +31,28 @@ export const AdminProvider = ({ children }) => {
     }
     console.log(doctors)
   }
+
+
+
+  const getPatients = async () => {
+    setPatientsLoaded(false)
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: 'http://localhost:8000/api/patients',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('admin-token')}`,
+        },
+      })
+      setPatients(response.data.patients)
+      setPatientsLoaded(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 
   const activateAccount = async (id) => {
     try {
@@ -145,6 +170,9 @@ export const AdminProvider = ({ children }) => {
         getAppointements,
         appointments,
         handleLogout,
+        getPatients,
+        patients, 
+        patientsLoaded
       }}
     >
       {children}

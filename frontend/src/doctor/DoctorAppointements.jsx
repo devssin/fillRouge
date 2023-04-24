@@ -3,13 +3,13 @@ import SideBar from './SideBar'
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-
+import Swal from 'sweetalert2'
 import {
   PhoneIcon,
   CheckCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/outline'
-import { Spinner } from 'flowbite-react'
+import Spinner from '../components/Spinner'
 
 const DoctorAppointements = () => {
   const navigate = useNavigate()
@@ -18,15 +18,15 @@ const DoctorAppointements = () => {
     const doctorToken = localStorage.getItem('doctor-token')
     const doctor = JSON.parse(localStorage.getItem('doctor')).id
     console.log(doctorToken, doctor)
-    if (!doctorToken ) {
+    
+    if (!doctorToken) {
       navigate('/doctor/login')
       return
     }
     if (doctor_id != doctor) {
-        navigate('/doctor/login')
-        return
+      navigate('/doctor/login')
+      return
     }
-
   }
 
   const [appointements, setAppointements] = useState([])
@@ -55,6 +55,37 @@ const DoctorAppointements = () => {
     getAppointements()
   }, [])
 
+  const handleAccept = async (id) => {
+    try {
+      const response = await axios({
+        method: 'PUT',
+        url: `http://localhost:8000/api/appointements/${id}/accept`,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('doctor-token')}`,
+        },
+      })
+      if (response.status === 200) {
+        Swal.fire({
+          title: 'Success',
+          text: response.data.message,
+          icon: 'success',
+          confirmButtonText: 'Ok',
+        }).then(() => {
+          getAppointements()
+        })
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to accepte the appointement',
+          icon: 'error',
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <>
@@ -133,7 +164,7 @@ const DoctorAppointements = () => {
                               </div>
                             </td>
                             <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-                              {appointement.date} {appointement.hour}
+                              {appointement.date} {appointement.time}
                             </td>
                             <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
                               <span
@@ -154,7 +185,7 @@ const DoctorAppointements = () => {
                                   <button
                                     className='bg-secondary px-3 py-1 text-xs rounded-md flex items-center text-white hover:bg-fourth transition duration-150'
                                     onClick={() => {
-                                      //   activateAccount(appointements.id)
+                                      handleAccept(appointement.id)
                                     }}
                                   >
                                     <CheckCircleIcon className='h-5 w-5 mr-1' />
@@ -163,10 +194,10 @@ const DoctorAppointements = () => {
                                 )}
                                 <button
                                   className='bg-red-600 px-3 py-1 text-xs rounded-md flex items-center text-white hover:bg-red-800 transition duration-150'
-                                  //   onClick={() => desactivateAccount(doctor.id)}
+                                  // onClick={() => desactivateAccount(doctor.id)}
                                 >
                                   <XCircleIcon className='h-5 w-5 mr-1' />
-                                  Desactiver
+                                  Annuler
                                 </button>
                               </div>
                             </td>

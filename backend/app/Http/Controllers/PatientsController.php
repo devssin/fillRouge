@@ -58,4 +58,16 @@ class PatientsController extends Controller
             201
         );
     }
+
+
+    public function index()
+    {
+        $patients = Patient::all();
+        foreach ($patients as $patient) {
+            $patient->appointements_count = $patient->appointements->count();
+        }
+        return response()->json([
+            'patients' => $patients,
+        ], 200);
+    }
 }

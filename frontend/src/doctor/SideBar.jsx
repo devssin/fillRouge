@@ -4,6 +4,7 @@ import {
   BellIcon,
   CalendarIcon,
   HomeIcon,
+  LogoutIcon,
   MenuAlt2Icon,
   UserCircleIcon,
   UsersIcon,
@@ -12,15 +13,31 @@ import {
 import { SearchIcon } from '@heroicons/react/solid'
 import { NavLink } from 'react-router-dom'
 
+const doctor_id = JSON.parse(localStorage.getItem('doctor')).id
+
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
-  { name: 'Doctors', href: '/admin/doctors', icon: UserCircleIcon, current: false },
-  { name: 'Patients', href: '/admin/patients', icon: UsersIcon, current: false },
-  { name: 'Appointments', href: '/admin/appointements', icon: CalendarIcon, current: false },
+  {
+    name: 'Dashboard',
+    href: `/doctor/${doctor_id}/dashboard`,
+    icon: HomeIcon,
+    current: true,
+  },
+  {
+    name: 'Reservations',
+    href: `/doctor/${doctor_id}/appointments`,
+    icon: CalendarIcon,
+    current: false,
+  },
+  {
+    name: 'Profile',
+    href: `/doctor/${doctor_id}/profile`,
+    icon: UsersIcon,
+    current: false,
+  },
 ]
 const userNavigation = [
-  { name: 'Your Profile', href: '/admin/dashboard' },
-  { name: 'Settings', href: '#' },
+  { name: 'Mon Profile', href: `/doctor/${doctor_id}/profile` },
+  { name: 'Reservations', href: `/doctor/${doctor_id}/appointments` },
 ]
 
 function classNames(...classes) {
@@ -94,21 +111,37 @@ export default function Example() {
                         key={item.name}
                         to={item.href}
                         className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          item.current
+                            ? 'bg-gray-900 text-white'
+                            : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'group flex items-center px-2 py-2 text-base font-medium rounded-md'
                         )}
                       >
                         <item.icon
                           className={classNames(
-                            item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+                            item.current
+                              ? 'text-gray-300'
+                              : 'text-gray-400 group-hover:text-gray-300',
                             'mr-4 flex-shrink-0 h-6 w-6'
                           )}
-                          aria-hidden="true"
+                          aria-hidden='true'
                         />
                         {item.name}
                       </NavLink>
                     ))}
-                    
+                    <button
+                      type='button'
+                      className={classNames(
+                        'text-gray-300 hover:bg-gray-700 hover:text-white',
+                        'group flex items-center px-2 py-2 text-base font-medium rounded-md w-full'
+                      )}
+                    >
+                      <LogoutIcon
+                        className='text-gray-400 group-hover:text-gray-300 mr-4 flex-shrink-0 h-6 w-6'
+                        aria-hidden='true'
+                      />
+                      Logout
+                    </button>
                   </nav>
                 </div>
               </div>
@@ -124,7 +157,6 @@ export default function Example() {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className='flex-1 flex flex-col min-h-0 bg-gray-800'>
             <div className='flex flex-col  flex-shrink-0 px-4 py-5 bg-gray-900'>
-              
               <h1 className='text-lg text-white font-bold'>GetWell</h1>
               <p className='text-white'>Doctor Dashboard</p>
             </div>
@@ -153,6 +185,19 @@ export default function Example() {
                     {item.name}
                   </NavLink>
                 ))}
+                <button
+                  type='button'
+                  className={classNames(
+                    'text-gray-300 hover:bg-gray-700 hover:text-white',
+                    'group flex items-center px-2 py-2 text-base font-medium rounded-md w-full'
+                  )}
+                >
+                  <LogoutIcon
+                    className='text-gray-400 group-hover:text-gray-300 mr-4 flex-shrink-0 h-6 w-6'
+                    aria-hidden='true'
+                  />
+                  Logout
+                </button>
               </nav>
             </div>
           </div>

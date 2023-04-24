@@ -3,6 +3,7 @@ import React, { createContext, useState } from 'react'
 import Swal from 'sweetalert2'
 
 import { useNavigate } from 'react-router-dom'
+import { findRenderedDOMComponentWithClass } from 'react-dom/test-utils'
 
 export const DoctorContext = createContext()
 export const DoctorProvider = ({ children }) => {
@@ -21,8 +22,8 @@ export const DoctorProvider = ({ children }) => {
     speciality: '',
   })
 
- 
-
+  const [doctor, setDoctor] = useState({})
+  const [doctorLoaded, setDoctorLoaded] = useState(false)
 
   const handleChange = (e) => {
     setData({
@@ -72,27 +73,29 @@ export const DoctorProvider = ({ children }) => {
         responseType: 'json',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
-      });
+      })
       console.log(response.data)
-      Swal.fire('Votre compte a été crée avec succès. Veuilez attendre que notre equipe de support vous contactera pour activer votre compte ', '', 'success')
-        .then(() => {navigate('/')})
+      Swal.fire(
+        'Votre compte a été crée avec succès. Veuilez attendre que notre equipe de support vous contactera pour activer votre compte ',
+        '',
+        'success'
+      ).then(() => {
+        navigate('/')
+      })
     } catch (error) {
-      Swal.fire('Une erreur est survenue', '', 'error');
-
+      Swal.fire('Une erreur est survenue', '', 'error')
     }
   }
 
-
   const handleLogin = async (e) => {
-
     e.preventDefault()
-    if(data.email === ''){
+    if (data.email === '') {
       Swal.fire('Veuillez remplir le champ email', '', 'error')
       return
     }
-    if(data.password === ''){
+    if (data.password === '') {
       Swal.fire('Veuillez remplir le champ mot de passe', '', 'error')
       return
     }
@@ -107,37 +110,89 @@ export const DoctorProvider = ({ children }) => {
         responseType: 'json',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
-      });
+      })
       const doctor = response.data.doctor
-      if(doctor.status === 'pending'){
-        Swal.fire('Votre compte est en attente de validation par notre equipe de support', '', 'warning')
-        .then(() => {navigate('/')});
+      if (doctor.status === 'pending') {
+        Swal.fire(
+          'Votre compte est en attente de validation par notre equipe de support',
+          '',
+          'warning'
+        ).then(() => {
+          navigate('/')
+        })
         return
       }
-      if(doctor.status === 'rejected'){
-        Swal.fire('Votre compte a été rejeté par notre equipe de support', '', 'error')
-        .then(() => {navigate('/')});
+      if (doctor.status === 'rejected') {
+        Swal.fire(
+          'Votre compte a été rejeté par notre equipe de support',
+          '',
+          'error'
+        ).then(() => {
+          navigate('/')
+        })
         return
       }
       localStorage.setItem('doctor', JSON.stringify(doctor))
       const token = response.data.token
       localStorage.setItem('doctor-token', token)
-      Swal.fire('Vous êtes connecté', '', 'success').then(() => {navigate('/')})
-
+      Swal.fire('Vous êtes connecté', '', 'success').then(() => {
+        navigate('/')
+      })
     } catch (error) {
-      Swal.fire('Incorrect email ou mot de passe', '', 'error');
-      console.error(error.message);
+      Swal.fire('Incorrect email ou mot de passe', '', 'error')
+      console.error(error.message)
     }
   }
 
+  const getDoctor = async  (id) => {
+    setDoctorLoaded(false)
+    console.log(`http://localhost:8000/api/doctors/${id}`)
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: `http://localhost:8000/api/doctors/${id}`,
+        responseType: 'json',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      })
+
+      setDoctor(response.data.doctor)
+      setDoctorLoaded(true)
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+
+  const checkIfDoctorIsLoggedIn = (id) => {
+    console.log(id)
+
+    const doctorToken = localStorage.getItem('doctor-token')
+    const doctor_id = JSON.parse(localStorage.getItem('doctor'))?.id
+    console.log(doctorToken, doctor_id)
+
+    if (!doctorToken) {
+      navigate('/doctor/login')
+      return
+    }
+    if (id != doctor_id) {
+      navigate('/doctor/login')
+      return
+    }
+  }
   return (
     <DoctorContext.Provider
       value={{
         handleRegister,
         handleChange,
         handleLogin,
+        checkIfDoctorIsLoggedIn, 
+        getDoctor, 
+        doctor,
+        doctorLoaded
       }}
     >
       {children}

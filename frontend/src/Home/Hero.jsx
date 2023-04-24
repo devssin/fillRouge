@@ -1,9 +1,10 @@
 import {useContext} from 'react'
 import { cities } from 'list-of-moroccan-cities'
-import specialities from '../specialities'
+import data from '../specialities_list.json'
 import { PublicContext } from '../context/PublicContext'
 
 const Hero = () => {
+  const {specialities} = data
   const {handleSearch, handleChange} = useContext(PublicContext)
   return (
     <div className='my-10 px-4  h-[70vh] grid place-content-center'>

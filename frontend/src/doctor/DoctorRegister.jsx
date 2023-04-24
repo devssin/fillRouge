@@ -2,13 +2,14 @@ import React, { useContext } from 'react'
 import Header from '../components/Header'
 
 import { cities } from 'list-of-moroccan-cities'
-import specialities from '../specialities'
+import data from '../specialities_list.json'
 
 import { DoctorContext } from '../context/DoctorContext'
 
 import { Link } from 'react-router-dom'
 
 const DoctorRegister = () => {
+  const { specialities } = data
   const { handleRegister, handleChange } = useContext(DoctorContext)
 
   return (
@@ -199,7 +200,6 @@ const DoctorRegister = () => {
             <Link to='/doctor/login' className='text-secondary mx-2'>
               Se connecter
             </Link>
-
           </p>
         </div>
       </div>

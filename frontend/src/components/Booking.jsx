@@ -18,7 +18,7 @@ const Booking = ({ doctor_id }) => {
 
   useEffect(() => {
     // annonyme function that invokes the async function
-    ;(async () => {
+    (async () => {
       try {
         const response = await axios.get(`http://localhost:8000/api/days`)
         setDays(response.data.days)
@@ -91,7 +91,7 @@ const Booking = ({ doctor_id }) => {
         })
       }
     } catch (error) {
-      console.log(error)
+      Swal.fire(error.response.data.message, '', 'error')
     }
   }
 

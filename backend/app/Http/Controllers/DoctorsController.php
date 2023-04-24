@@ -29,13 +29,13 @@ class DoctorsController extends Controller
     public function register(StoreDoctorsRequest $request)
     {
         $request->validated($request->all());
-        
+
 
         $image = $request->file('profilePicture');
         if ($image) {
             $imageName = rand() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/profilePictures', $imageName);
-        }else{
+        } else {
             $imageName = null;
         }
 
@@ -109,14 +109,24 @@ class DoctorsController extends Controller
 
     public function index()
     {
-        $doctors = Doctor::all();
+        $doctors = Doctor::orderBy('created_at', 'desc')->get();
         return response()->json(
             [
                 'doctors' => $doctors,
             ],
             200
         );
-        
+    }
+
+    public function activeDoctors()
+    {
+        $doctors = Doctor::where('status', 'accepted')->get();
+        return response()->json(
+            [
+                'doctors' => $doctors,
+            ],
+            200
+        );
     }
 
     public function activate($id)
@@ -133,8 +143,8 @@ class DoctorsController extends Controller
         ];
 
         Mail::to($doctor->email)->send(new ActiveAccount($mailData));
-        
-        
+
+
         return response()->json(
             [
                 'doctor' => $doctor,
@@ -144,8 +154,10 @@ class DoctorsController extends Controller
             ],
             200
         );
-        
     }
+
+
+
     public function desactivate($id)
     {
         $doctor = Doctor::find($id);
@@ -164,7 +176,7 @@ class DoctorsController extends Controller
 
     public function latest()
     {
-        $doctors = Doctor::orderBy('created_at', 'desc')->take(6)->get();
+        $doctors = Doctor::where('status', 'accepted')->orderBy('created_at', 'desc')->take(6)->get();
         return response()->json(
             [
                 'doctors' => $doctors,
@@ -174,13 +186,14 @@ class DoctorsController extends Controller
     }
 
 
-    public function search($speciality, $city){
+    public function search($speciality, $city)
+    {
 
 
-        
 
-        if($speciality == 0 && $city == 0){
-            $doctors = Doctor::all();
+
+        if ($speciality == 0 && $city == 0) {
+            $doctors = Doctor::where('status', 'accepted')->get();
             return response()->json(
                 [
                     'doctors' => $doctors,
@@ -189,32 +202,31 @@ class DoctorsController extends Controller
             );
         }
 
-        if($speciality == 0){
-            $doctors = Doctor::where('city', 'like', '%' . $city . '%')
+        if ($speciality == 0) {
+            $doctors = Doctor::where('city', 'like', '%' . $city . '%')->where('status', 'accepted')->get();
+            return response()->json(
+                [
+                    'doctors' => $doctors,
+                ],
+                200
+            );
+        }
+
+        if ($city == 0) {
+            $doctors = Doctor::where('speciality', 'like', '%' . $speciality . '%')->where('status', 'accepted')
+                ->get();
+            return response()->json(
+                [
+                    'doctors' => $doctors,
+                ],
+                200
+            );
+        }
+
+
+        $doctors = Doctor::where('speciality', 'like', '%' . $speciality . '%')->where('status', 'accepted')
+            ->where('city', 'like', '%' . $city . '%')
             ->get();
-            return response()->json(
-                [
-                    'doctors' => $doctors,
-                ],
-                200
-            );
-        }
-
-        if($city == 0){
-            $doctors = Doctor::where('speciality', 'like', '%' . $speciality . '%')
-            ->get();
-            return response()->json(
-                [
-                    'doctors' => $doctors,
-                ],
-                200
-            );
-        }
-
-
-        $doctors = Doctor::where('speciality', 'like', '%' . $speciality . '%')
-        ->where('city', 'like', '%' . $city . '%')
-        ->get();
         return response()->json(
             [
                 'doctors' => $doctors,

@@ -31,6 +31,13 @@ class AppointementsController extends Controller
     public function store( Request $request){
 
         $hour = Hour::find($request->hour_id);
+        if($hour->is_available == false){
+            return response()->json([
+                'message' => 'This hour is not available',
+                'status' => 400
+            ], 400);
+        }
+        
         $hour->is_available = false;
         $hour->save();
 
@@ -85,6 +92,31 @@ class AppointementsController extends Controller
             'status' => 200
         ], 200);
     }
+
+    public function accept($id){
+        $appointement = Appointement::find($id);
+        $appointement->status = 'accepted';
+        $appointement->save();
+        
+        return response()->json([
+            'message' => 'Appointement accepted successfully',
+            'status' => 200
+        ], 200);
+    }
+
+    public function refuse($id){
+        $appointement = Appointement::find($id);
+        $appointement->status = 'rejected';
+        $appointement->save();
+        
+        return response()->json([
+            'message' => 'Appointement refused successfully',
+            'status' => 200
+        ], 200);
+    }
+
+
+   
 
     
 }

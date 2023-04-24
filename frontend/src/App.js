@@ -16,6 +16,8 @@ import { PublicProvider } from './context/PublicContext'
 import Doctors from './doctor/Doctors'
 import DoctorAppointements from './doctor/DoctorAppointements'
 import AdminAppoinetements from './admin/AdminAppoinetements'
+import AdminPatients from './admin/AdminPatients'
+import DoctorProfile from './doctor/DoctorProfile'
 
 function App() {
   return (
@@ -61,6 +63,8 @@ function App() {
               </PatientProvider>
             }
           />
+
+          <Route path='/doctor/:doctor_id/profile' element={<DoctorProvider><DoctorProfile /></DoctorProvider>} />
           <Route
             path='/patient/register'
             element={
@@ -93,7 +97,7 @@ function App() {
               </AdminProvider>
             }
           />
-
+          <Route path="/admin/patients" element={<AdminProvider ><AdminPatients /></AdminProvider>} />
           <Route path="/admin/appointements" element={<AdminProvider><AdminAppoinetements /></AdminProvider>} />
 
           <Route path='/*' element={<NotFound />} />

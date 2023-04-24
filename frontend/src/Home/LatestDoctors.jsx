@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import avatar from '../assets/img/avatar.png'
 import { Link } from 'react-router-dom'
 import { PublicContext } from '../context/PublicContext'
+import { Spinner } from 'flowbite-react'
 
 const Doctors = () => {
   const { latestDoctors, getLatestDoctors, latestDoctorsLoaded } =
@@ -12,6 +13,8 @@ const Doctors = () => {
   }, [])
 
   console.log(latestDoctors)
+  console.log(latestDoctorsLoaded)
+
 
   return (
     <div className='px-4 mt-10'>
@@ -49,7 +52,9 @@ const Doctors = () => {
           ))}
         </div>
       ) : (
-        <p>Doctors loading</p>
+        <div className='flex justify-center items-center'>
+          <Spinner />
+        </div>
       )}
     </div>
   )
